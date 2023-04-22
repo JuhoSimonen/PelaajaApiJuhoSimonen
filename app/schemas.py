@@ -1,20 +1,31 @@
 from pydantic import BaseModel
-import datetime
 
-class EventCreate(BaseModel):
+
+class EventType(BaseModel):
     type:str
+
+    class Config:
+        orm_mode = True
+
+class EventCreate(EventType):
     detail:str
-    player_id:int
+
+    class Config:
+        orm_mode = True
 
 class EventDb(EventCreate):
     id:int
-    timestamp:str = datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")
+    timestamp:str
+    player_id:int
     
     class Config:
         orm_mode = True
 
 class PlayerCreate(BaseModel):
     name:str
+
+    class Config:
+        orm_mode = True
 
 class PlayerBase(PlayerCreate):
     id:int
@@ -27,3 +38,5 @@ class PlayerDb(PlayerBase):
 
     class Config:
         orm_mode = True
+
+    
