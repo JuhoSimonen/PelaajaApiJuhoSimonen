@@ -13,7 +13,7 @@ class Player(Base):
     events = relationship("Event",back_populates="owner")
 
 class Event(Base):
-    _tablename__ = "events"
+    __tablename__ = "events"
 
     id = Column(Integer,primary_key=True)
     type = Column(String)
