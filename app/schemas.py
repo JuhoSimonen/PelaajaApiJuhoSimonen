@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 
+#Event
 
 class EventType(BaseModel):
-    type:str
+    type:str | None = None
 
     class Config:
         orm_mode = True
@@ -21,6 +22,8 @@ class EventDb(EventCreate):
     class Config:
         orm_mode = True
 
+#Player
+
 class PlayerCreate(BaseModel):
     name:str
 
@@ -34,7 +37,7 @@ class PlayerBase(PlayerCreate):
         orm_mode = True
     
 class PlayerDb(PlayerBase):
-    events:list
+    events:list[EventDb]
 
     class Config:
         orm_mode = True

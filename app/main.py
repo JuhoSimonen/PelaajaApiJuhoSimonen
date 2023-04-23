@@ -16,11 +16,11 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/players/",response_model=schemas.PlayerBase)
+@app.post("/players",response_model=schemas.PlayerBase)
 def create_player(player:schemas.PlayerCreate,db:Session=Depends(get_db)):
     return crud.create_player(db=db,player=player)
 
-@app.get("/players/", response_model=list[schemas.PlayerDb])
+@app.get("/players", response_model=list[schemas.PlayerDb])
 def read_players(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     players = crud.get_players(db, skip=skip, limit=limit)
     return players
@@ -42,13 +42,28 @@ def create_event_for_player(
     if event.type != "level_started" and event.type != "level_solved":
         raise HTTPException(status_code=400,detail="Unknown event type")
     return crud.create_player_event(db=db,event=event,player_id=id)
-'''
-@app.get("/events/", response_model=list[schemas.EventDb])
-def read_events(event_type:schemas.EventType, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    events = crud.get_events(db, skip=skip, limit=limit,type = event_type.type)
+
+#yläpuolella toimivaa
+
+
+@app.get("/events", response_model=list[schemas.EventDb])
+def read_events(type:str| None = None, db: Session = Depends(get_db)):
+    events = crud.get_events(db,type)
     return events
-'''
+
+
+@app.get("/players/{id}/events",response_model=list[schemas.EventDb])
+def read_player_events(id:int,type:str|None = None,db:Session=Depends(get_db)):
+    db_player_events = crud.get_player_events(db,id,type)
+    if db_player_events is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_player_events
+
+
+    '''
+toimii!
 @app.get("/events/", response_model=list[schemas.EventDb])
 def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     db_events = crud.get_events(db, skip=skip, limit=limit)
     return db_events
+'''

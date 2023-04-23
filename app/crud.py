@@ -15,8 +15,6 @@ def create_player(db:Session,player:schemas.PlayerCreate):
     db.refresh(db_player)
     return db_player
 
-
-
 def create_player_event(db:Session,event:schemas.EventCreate,player_id:int):
     db_event = models.Event(**event.dict(),player_id = player_id,timestamp = datetime.datetime.now().strftime("%Y-%m-%d  %H:%M:%S"))
     db.add(db_event)
@@ -24,17 +22,16 @@ def create_player_event(db:Session,event:schemas.EventCreate,player_id:int):
     db.refresh(db_event)
     return db_event
 
-
-def get_events(db:Session,skip: int = 0,limit:int=100):
-    return db.query(models.Event).offset(skip).limit(limit).all()
+def get_player_events(db:Session,id:int,type:str):
+    if type is None:
+        return db.query(models.Event).filter(models.Event.player_id == id).all()
+    player_db = db.query(models.Event).filter(models.Event.player_id == id,models.Event.type == type).all()
+    return player_db
     
+def get_events(db:Session,type:str):
+    if type is None:
+        return db.query(models.Event).all()
+    return db.query(models.Event).filter(models.Event.type == type).all()
     #return db.query(models.Event).offset(skip).limit(limit).all()
 
-'''
-def get_events(db:Session,skip: int = 0,limit:int=100,typecrud:str="all_events"):
-    if typecrud == "all_events":
-        return db.query(models.Event).offset(skip).limit(limit).all()
-    return db.query(models.Event).filter(models.Event.type== typecrud).offset(skip).limit(limit).all()
-    #return db.query(models.Event).offset(skip).limit(limit).all()
-'''
 
