@@ -2,20 +2,22 @@ from pydantic import BaseModel
 
 #Event
 
-class EventType(BaseModel):
-    type:str | None = None
-
+class EventCreate(BaseModel):
+    type:str
+    detail:str
     class Config:
         orm_mode = True
 
-class EventCreate(EventType):
+class EventBase(BaseModel):
+    id:int
+    type:str | None = None
     detail:str
 
     class Config:
         orm_mode = True
 
-class EventDb(EventCreate):
-    id:int
+class EventDb(EventBase):
+    
     timestamp:str
     player_id:int
     
@@ -27,12 +29,9 @@ class EventDb(EventCreate):
 class PlayerCreate(BaseModel):
     name:str
 
-    class Config:
-        orm_mode = True
-
-class PlayerBase(PlayerCreate):
+class PlayerBase(BaseModel):
     id:int
-
+    name:str
     class Config:
         orm_mode = True
     

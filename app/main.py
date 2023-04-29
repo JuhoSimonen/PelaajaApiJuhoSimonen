@@ -17,10 +17,10 @@ def get_db():
         db.close()
 
 @app.post("/players",response_model=schemas.PlayerBase)
-def create_player(player:schemas.PlayerCreate,db:Session=Depends(get_db)):
-    return crud.create_player(db=db,player=player)
+def create_player(name:schemas.PlayerCreate,db:Session=Depends(get_db)):
+    return crud.create_player(name,db=db)
 
-@app.get("/players", response_model=list[schemas.PlayerDb])
+@app.get("/players", response_model=list[schemas.PlayerBase])
 def read_players(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     players = crud.get_players(db, skip=skip, limit=limit)
     return players
@@ -43,9 +43,6 @@ def create_event_for_player(
         raise HTTPException(status_code=400,detail="Unknown event type")
     return crud.create_player_event(db=db,event=event,player_id=id)
 
-#yläpuolella toimivaa
-
-
 @app.get("/events", response_model=list[schemas.EventDb])
 def read_events(type:str| None = None, db: Session = Depends(get_db)):
     events = crud.get_events(db,type)
@@ -60,10 +57,3 @@ def read_player_events(id:int,type:str|None = None,db:Session=Depends(get_db)):
     return db_player_events
 
 
-    '''
-toimii!
-@app.get("/events/", response_model=list[schemas.EventDb])
-def read_events(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    db_events = crud.get_events(db, skip=skip, limit=limit)
-    return db_events
-'''

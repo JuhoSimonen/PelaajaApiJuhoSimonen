@@ -8,8 +8,8 @@ def get_players(db:Session,skip = 0,limit:int=100):
 def get_player(db:Session,player_id:int):
     return db.query(models.Player).filter(models.Player.id == player_id).first()
 
-def create_player(db:Session,player:schemas.PlayerCreate):
-    db_player = models.Player(name = player.name)
+def create_player(nimi:schemas.PlayerCreate,db:Session):
+    db_player = models.Player(name = nimi.name)
     db.add(db_player)
     db.commit()
     db.refresh(db_player)
@@ -32,6 +32,6 @@ def get_events(db:Session,type:str):
     if type is None:
         return db.query(models.Event).all()
     return db.query(models.Event).filter(models.Event.type == type).all()
-    #return db.query(models.Event).offset(skip).limit(limit).all()
+    
 
 
